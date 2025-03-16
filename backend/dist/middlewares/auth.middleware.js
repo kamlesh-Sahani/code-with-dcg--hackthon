@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
+import companyModel from "../models/company.model.js";
 export const authMiddleware = async (req, res, next) => {
     try {
         /**
@@ -17,8 +18,14 @@ export const authMiddleware = async (req, res, next) => {
         }
         const secret = process.env.JWT_SECRET;
         const decoded = jwt.verify(token, secret);
-        const user = await userModel.findById(decoded._id);
-        req.user = user;
+        if (decoded.role === "user") {
+            const user = await userModel.findById(decoded._id);
+            req.user = user;
+        }
+        else {
+            const company = await companyModel.findById(decoded._id);
+            req.company = company;
+        }
         next();
     }
     catch (error) {

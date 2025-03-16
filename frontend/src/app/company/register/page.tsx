@@ -8,14 +8,18 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/authContext";
+import api from "@/lib/api";
 
 export interface RegisterDataType {
   companyName: string;
   adminEmail: string;
   adminName: string;
-  city: string;
-  state: string;
-  country: string;
+  address:{
+    city: string;
+    state: string;
+    country: string;
+  }
+ 
   password: string;
 }
 
@@ -24,14 +28,16 @@ export default function RegisterPage() {
     companyName: "",
     adminEmail: "",
     adminName: "",
-    city: "",
-    state: "",
-    country: "",
+    address:{
+      city: "",
+      state: "",
+      country: "",
+    },
     password: "",
   });
 
   const [loading, setLoading] = useState<boolean>(false);
-  const { setUser } = useContext(AuthContext);
+  const { setCompany } = useContext(AuthContext);
   const router = useRouter();
 
   const valueHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,27 +53,29 @@ export default function RegisterPage() {
     try {
       setLoading(true);
       console.log(registerData);
-      const res: any = // await registerAction(registerData);
-      console.log(res);
+      const {data} = await api.post("/company/new",registerData);
 
-      if (res.success) {
-        toast.success(res.message);
+      if (data.success) {
+        toast.success(data.message);
         setRegisterData({
           companyName: "",
           adminEmail: "",
           adminName: "",
-          city: "",
-          state: "",
-          country: "",
+          address:{
+            city: "",
+            state: "",
+            country: "",
+          },
           password: "",
         });
-        setUser(res?.user);
-        router.push("/dashboard");
+      setCompany(data.company)
+        router.push("/profile");
       } else {
-        toast.error(res.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message || "Something went wrong");
+      console.log(error,"error")
+      toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

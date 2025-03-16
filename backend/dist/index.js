@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import dbConnect from './utils/dbConnect.js';
 import userRouter from './routes/user.route.js';
 import interviewRouter from "./routes/interview.route.js";
+import companyRouter from "./routes/company.route.js";
 import errorMiddleware from './middlewares/error.middleware.js';
 // env variables
 const PORT = process.env.PORT || 2001;
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 // apis 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/interview", interviewRouter);
+app.use("/api/v1/company", companyRouter);
 app.use(errorMiddleware);
 server.listen(PORT, () => {
     console.log(`server is running on: localhost:${PORT}`);

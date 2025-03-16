@@ -4,19 +4,27 @@ import axios from "axios";
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
+import { ICompany } from "@/type";
+
 interface AuthContextType {
   user: null | UserType;
   setUser: Dispatch<SetStateAction<UserType>>;
   logoutHandler:()=>void;
+  company:ICompany | null;
+  setCompany:Dispatch<SetStateAction<UserType>>;
 }
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   setUser: () => {},
-  logoutHandler:()=>{}
+  logoutHandler:()=>{},
+  company:null,
+  setCompany:()=>{}
 });
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState();
+  const [company,setCompany] = useState();
+
 
   const logoutHandler = async () => {
     try {
@@ -35,7 +43,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
   return (
-    <AuthContext.Provider value={{ user, setUser,logoutHandler}}>
+    <AuthContext.Provider value={{ user, setUser,logoutHandler,company,setCompany}}>
       {children}
     </AuthContext.Provider>
   );

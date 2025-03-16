@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useState,useContext, useEffect } from "react";
+import React, { ChangeEvent, useState, useContext, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/util";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/authContext";
-import {v4 as uuid } from  "uuid"
+import api from "@/lib/api";
 export interface LoginDataType {
   email: string;
   password: string;
@@ -21,8 +21,7 @@ export default function LoginPage() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [guestLoading, setGuestLoading] = useState<boolean>(false);
-  const [interviewId, setInterviewId] = useState('');
-  const {setUser} = useContext(AuthContext)
+  const { setCompany } = useContext(AuthContext);
   const router = useRouter();
 
   const valueHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,22 +36,22 @@ export default function LoginPage() {
     try {
       setLoading(true);
       console.log(loginData);
-      const res:any = //await loginAction(loginData);
-      console.log(res);
- 
-      if (res.success) {
-        toast.success(res.message);
+      const { data } = await api.post("/company/login", loginData);
+      console.log(data);
+
+      if (data.success) {
+        toast.success(data.message);
         setLoginData({
           email: "",
           password: "",
         });
-        setUser(res?.user)
-        router.push(`/interview/${interviewId}`);
+        setCompany(data?.user);
+        router.push("/profile");
       } else {
-        toast.error(res.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message || "something went wrong");
+      toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -66,26 +65,20 @@ export default function LoginPage() {
         password: process.env.NEXT_PUBLIC_GUEST_PASSWORD,
       };
       console.log(guestLoginData, "guest");
-      const res:any = await loginAction(guestLoginData);
-      if (res.success) {
-        setUser(res?.user)
-        toast.success(res.message);
-        router.push(`/interview/${interviewId}`);
-      } else {
-        toast.error(res.message);
-      }
+      // const res:any = await loginAction(guestLoginData);
+      // if (res.success) {
+      //   setUser(res?.user)
+      //   toast.success(res.message);
+      //   router.push(`/interview/${interviewId}`);
+      // } else {
+      //   toast.error(res.message);
+      // }
     } catch (error) {
       toast.error(error.message || "something went wrong");
     } finally {
       setGuestLoading(false);
     }
   };
-
-
-  useEffect(()=>{
-    const id = uuid();
-    setInterviewId(id);
-  },[])
 
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input   mt-20 ">

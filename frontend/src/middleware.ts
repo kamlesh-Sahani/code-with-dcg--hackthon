@@ -4,7 +4,6 @@ import {cookies} from "next/headers"
 export async function middleware(request: NextRequest) {
     const cookiesStore = await cookies();
     const authToken = cookiesStore.get("auth-token")?.value;
-    console.log(authToken,"token")
     const protectedRoutes = ["/interview","/profile"];
     const withoutLoginRoute = ["/register","/login"];
 

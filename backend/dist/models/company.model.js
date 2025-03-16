@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 const CompanySchema = new Schema({
     companyName: { type: String, required: true },
-    amdminEmail: { type: String, required: true, unique: true },
+    adminEmail: { type: String, required: true, unique: true },
     adminName: { type: String, required: true },
     address: {
         city: { type: String },
@@ -29,7 +29,7 @@ CompanySchema.pre("save", async function (next) {
     next();
 });
 CompanySchema.methods.generateToken = function () {
-    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: this._id, role: "company" }, process.env.JWT_SECRET, {
         expiresIn: "1d"
     });
     return token;

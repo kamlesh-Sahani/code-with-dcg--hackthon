@@ -64,10 +64,6 @@ const interviewSchema  = new mongoose.Schema<InterviewType>({
         required:[true,"please enter the roomid"],
         unique:true
     }
-
-
-
-    
 },{timestamps:true})
 
 interviewSchema.index({interviewerId:1})

@@ -1,7 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
-export  const authMiddleware = async(req:Request,res:Response,next:NextFunction)=>{
+import companyModel from "../models/company.model.js";
+
+
+export interface AuthenticatedRequest extends Request {
+    user?: any; // Ideally, replace `any` with the actual user type from your model
+    company?: any; // Replace `any` with your company model type
+  }
+export  const authMiddleware = async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     try {
         /**
          * eg. headers:{
@@ -21,8 +28,15 @@ export  const authMiddleware = async(req:Request,res:Response,next:NextFunction)
         const secret = process.env.JWT_SECRET!;
 
         const decoded:any = jwt.verify(token,secret);
-        const user  = await userModel.findById(decoded._id);
-        req.user = user;
+        if(decoded.role==="user"){
+             const user  = await userModel.findById(decoded._id);
+             req.user = user;
+        }else{
+            const company  = await companyModel.findById(decoded._id);
+            req.company = company ;
+        }
+     
+        
         next();
     } catch (error:any) {
         return res.status(500).json({
