@@ -26,7 +26,7 @@ import {
   MoreHorizontal,
   Mail,
 } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { AuthContext } from "@/context/authContext";
@@ -69,6 +69,8 @@ export default function Profile() {
   const [showScheduleInterview, setShowScheduleInterview] = useState(false);
   const [showShortlistedCandidates, setShowShortlistedCandidates] =
     useState(false);
+
+    const [role,setRole] = useState("");
   const [performanceData] = useState({
     weekly: [70, 80, 75, 90, 85, 95, 100],
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -179,15 +181,20 @@ export default function Profile() {
       lastUpdate: "5 days ago",
     },
   ];
+
+  useEffect(()=>{
+const role = localStorage.getItem("role");
+setRole(role)
+  },[])
   return (
     <>
-      {localStorage.getItem("role") === "user" ? (
+      { role=== "user" ? (
         <div className="min-h-screen p-5 bg-gray-900">
           <div className="max-w-md mx-auto p-6 rounded-xl bg-gray-800 shadow-lg">
             <div className="flex flex-col items-center gap-4">
               {/* Profile Image */}
               <Avatar className="w-32 h-32 border-4 border-indigo-500">
-  
+            
                 <AvatarFallback className="bg-gray-700 text-white text-4xl">
                   {user?.name?.charAt(0) || "U"}
                 </AvatarFallback>
