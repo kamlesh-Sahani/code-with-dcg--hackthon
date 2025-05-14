@@ -187,7 +187,7 @@ export default function Profile() {
             <div className="flex flex-col items-center gap-4">
               {/* Profile Image */}
               <Avatar className="w-32 h-32 border-4 border-indigo-500">
-                <AvatarImage src={user?.avatar || "/default-avatar.jpg"} />
+  
                 <AvatarFallback className="bg-gray-700 text-white text-4xl">
                   {user?.name?.charAt(0) || "U"}
                 </AvatarFallback>
