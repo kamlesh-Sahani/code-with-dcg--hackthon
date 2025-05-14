@@ -206,10 +206,6 @@ export default function Profile() {
                 </p>
               </div>
 
-              {/* Status Badge */}
-              <span className="mt-2 px-3 py-1 rounded-full text-sm bg-indigo-900 text-indigo-300">
-                {user?.isActive ? "Active" : "Inactive"}
-              </span>
             </div>
           </div>
         </div>
