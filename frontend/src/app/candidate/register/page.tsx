@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/util";
 import { Cover } from "@/components/ui/cover";
 import Link from "next/link";
-import { loginAction, registerAction } from "../action/auth.action";
+import { loginAction, registerAction } from "@/app/action/auth.action";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {v4 as uuid} from "uuid";
@@ -14,7 +14,6 @@ export interface registerDataType{
   email:string;
   password:string;
 }
-
 export default function SignupFormDemo() {
   const [registerData,setRegisterData] = useState<registerDataType>({
     name:"",
@@ -47,7 +46,7 @@ export default function SignupFormDemo() {
           email:"",
           password:""
         })
-        router.push(`/interview/${interviewId}`);
+        router.push(`/`);
       }else{
         toast.error(res.message);
       }
@@ -72,12 +71,14 @@ export default function SignupFormDemo() {
       console.log(guestLoginData,"guest")
       const res = await loginAction(guestLoginData);
       if(res.success){
+        localStorage.setItem("role","user")
         toast.success(res.message);
-        router.push(`/interview/${interviewId}`);
+        router.push(`/`);
       }else{
         toast.error(res.message);
       }
     } catch (error) {
+      localStorage.removeItem("role")
       toast.error(error.message|| "something went wrong");
     }finally{
       setGuestLoading(false)
@@ -139,7 +140,7 @@ export default function SignupFormDemo() {
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
       </form>
-      <Link href={"/login"} className="text-white text-center w-full  block italic">Already have an account <span className="text-mainColor font-semibold underline">Login</span></Link>
+      <Link href={"/candidate/login"} className="text-white text-center w-full  block italic">Already have an account <span className="text-mainColor font-semibold underline">Login</span></Link>
     </div>
   );
 }

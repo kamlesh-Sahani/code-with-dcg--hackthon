@@ -28,8 +28,10 @@ export  const authMiddleware = async(req:AuthenticatedRequest,res:Response,next:
         const secret = process.env.JWT_SECRET!;
 
         const decoded:any = jwt.verify(token,secret);
+        console.log(decoded,"decoded")
         if(decoded.role==="user"){
              const user  = await userModel.findById(decoded._id);
+             console.log(user,"user")
              req.user = user;
         }else{
             const company  = await companyModel.findById(decoded._id);

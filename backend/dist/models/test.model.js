@@ -14,9 +14,17 @@ const QuestionSetSchema = new Schema({
             },
             questionText: { type: String, required: true },
             options: { type: [String], default: undefined },
-            correctAnswer: { type: Schema.Types.Mixed, default: undefined },
+            correctAnswer: { type: Schema.Types.Mixed, default: undefined, select: false },
         },
     ],
+    score: Number,
+    interviewId: {
+        type: String,
+    },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 const QuestionSetModel = mongoose.models.QuestionSet ||

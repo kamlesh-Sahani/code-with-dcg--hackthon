@@ -9,10 +9,10 @@ interface IQuestion {
 }
 export const createQuestionSet = async (req: Request, res: Response) => {
   try {
-    const { title, description, difficulty } = req.body;
-    console.log("New Data", title, description, difficulty);
+    const { title, description, difficulty,interviewId } = req.body;
+    console.log("New Data", title, description, difficulty,interviewId);
 
-    if (!title || !description || !difficulty) {
+    if (!title || !description || !difficulty || !interviewId) {
       return res.status(400).json({
         success: false,
         message: "Please provide title, description, difficulty.",
@@ -22,6 +22,7 @@ export const createQuestionSet = async (req: Request, res: Response) => {
       title,
       description,
       difficulty,
+      interviewId
     });
 
     return res.status(201).json({
@@ -128,6 +129,71 @@ export const getAllQuestionSets = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getTest = async (req: Request, res: Response) => {
+  try {
+    const {interviewId} = req.body;
+    if(!interviewId){
+      return res.status(404).json({
+        success: false,
+        message:
+         "test is not found",
+      });
+    }
+    const questionSets = await QuestionSetModel.find({ isDeleted: false,interviewId,isCompleted:false}).sort(
+      { createdAt: -1 }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Question sets fetched successfully!",
+      data: questionSets,
+    });
+  } catch (error: any) {
+    console.error("Error fetching question sets:", error);
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message || "Something went wrong while fetching question sets.",
+    });
+  }
+};
+
+export const submitAnser = async (req: Request, res: Response) => {
+  try {
+    const {userAnswers,testId} = req.body;
+    
+    const test = await QuestionSetModel.findById(testId).select("+questions.correctAnswer");
+    const questionSets = test.questions;
+    console.log(questionSets,"questions");
+    let score=0;
+    for(let i=0;i<questionSets.length;i++){
+      const question= questionSets[i];
+      if(userAnswers[question._id]===question.correctAnswer){
+        score++;
+      }
+      
+    }
+
+    test.score=score;
+    test.isCompleted=true;
+    await test.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "submit successfully",
+      score,
+    });
+  } catch (error: any) {
+    console.error("Error fetching question sets:", error);
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message || "Something went wrong while fetching question sets.",
+    });
+  }
+};
+
 
 export const deleteQuestionSet = async (req: Request, res: Response) => {
   try {

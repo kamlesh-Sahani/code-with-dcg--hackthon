@@ -14,12 +14,7 @@ export interface RegisterDataType {
   companyName: string;
   adminEmail: string;
   adminName: string;
-  address:{
-    city: string;
-    state: string;
-    country: string;
-  }
- 
+  address:string;
   password: string;
 }
 
@@ -28,11 +23,7 @@ export default function RegisterPage() {
     companyName: "",
     adminEmail: "",
     adminName: "",
-    address:{
-      city: "",
-      state: "",
-      country: "",
-    },
+    address:"",
     password: "",
   });
 
@@ -56,16 +47,13 @@ export default function RegisterPage() {
       const {data} = await api.post("/company/new",registerData);
 
       if (data.success) {
-        toast.success(data.message);
+        localStorage.setItem("role","company")
+        toast.success(data.message || "register successfully");
         setRegisterData({
           companyName: "",
           adminEmail: "",
           adminName: "",
-          address:{
-            city: "",
-            state: "",
-            country: "",
-          },
+          address:"",
           password: "",
         });
       setCompany(data.company)

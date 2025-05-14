@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/util";
 import { Cover } from "@/components/ui/cover";
 import Link from "next/link";
-import { loginAction } from "../action/auth.action";
+import { loginAction } from "@/app/action/auth.action";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/authContext";
@@ -48,7 +48,7 @@ export default function LoginPage() {
           password: "",
         });
         setUser(res?.user)
-        router.push(`/interview/${interviewId}`);
+        router.push(`/`);
       } else {
         toast.error(res.message);
       }
@@ -69,13 +69,15 @@ export default function LoginPage() {
       console.log(guestLoginData, "guest");
       const res:any = await loginAction(guestLoginData);
       if (res.success) {
+        localStorage.setItem("role","user")
         setUser(res?.user)
         toast.success(res.message);
-        router.push(`/interview/${interviewId}`);
+        router.push(`/`);
       } else {
         toast.error(res.message);
       }
     } catch (error) {
+      localStorage.removeItem("role")
       toast.error(error.message || "something went wrong");
     } finally {
       setGuestLoading(false);
@@ -97,6 +99,7 @@ export default function LoginPage() {
           <Cover>CodeHire</Cover>{" "}
         </span>
       </h1>
+
       <form className="my-8" onSubmit={handleSubmit}>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
@@ -142,7 +145,7 @@ export default function LoginPage() {
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
       </form>
       <Link
-        href={"/register"}
+        href={"/candidate/register"}
         className="text-white text-center w-full  block italic"
       >
         Register new account

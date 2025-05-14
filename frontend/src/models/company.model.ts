@@ -5,7 +5,7 @@ export interface ICompany extends Document {
   companyName: string;
   adminEmail: string;
   adminName:string;
-  address?:String;
+  address: string;
   password:string;
   isActive:boolean;
   comparePassword:(password:string)=>Promise<boolean>;

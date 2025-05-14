@@ -6,6 +6,8 @@ import axios from "axios";
 import { AuthContext } from "@/context/authContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import api from "@/lib/api";
+
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, setUser } = useContext(AuthContext);
@@ -19,7 +21,17 @@ const Navbar = () => {
 
   const fetchMe = async () => {
     try {
-      const { data } = await axios.get("/api/user/me");
+      const role = localStorage.getItem("role");
+      let data:any;
+      if (role === "company") {
+        const res = await api.get("/company/me");
+        data = res.data;
+      }
+      if (role === "user") {
+        const res = await api.get("/user/me");
+        data = res.data;
+      }
+      console.log(data);
       console.log(data, "me");
       if (data.success) {
         setUser(data.user);
@@ -30,9 +42,8 @@ const Navbar = () => {
     }
   };
 
- 
   useEffect(() => {
-    if(!user){
+    if (!user) {
       fetchMe();
     }
   }, [user]);
@@ -63,14 +74,24 @@ const Navbar = () => {
             </Avatar>
           </Link>
         ) : (
-          <Link href={"/login"} className="font-medium text-[13px]">
-            <button
-              className="bg-mainColor text-black h-[40px] w-[140px] text-[17px] rounded-xl font-semibold flex justify-center items-center gap-3 hover:shadow-mainColor/50 transition-all hover:shadow-lg"
-              aria-label="Login to CodeHire"
-            >
-              <p>Login</p>
-            </button>
-          </Link>
+          <div className="flex  items-center justify-center gap-3">
+            <Link href={"/candidate/login"} className="font-medium text-[13px]">
+              <button
+                className="bg-transparent text-white px-4 py-2 text-[17px] rounded-xl font-semibold flex justify-center items-center gap-3 border-2 border-[#eee] transition-all hover:shadow-lg"
+                aria-label="Login to CodeHire"
+              >
+                <p>Candidate Login</p>
+              </button>
+            </Link>
+            <Link href={"/company/login"} className="font-medium text-[13px]">
+              <button
+                className="bg-mainColor text-black px-4 py-2 text-[17px] rounded-xl font-semibold flex justify-center items-center gap-3 hover:shadow-mainColor/50 transition-all hover:shadow-lg"
+                aria-label="Login to CodeHire"
+              >
+                <p>Company Login</p>
+              </button>
+            </Link>
+          </div>
         )}
       </div>
     </div>

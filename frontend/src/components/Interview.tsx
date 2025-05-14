@@ -77,7 +77,7 @@ export default function WebRTCComponent() {
 
   return (
     <div className="flex flex-col w-full items-center space-y-4 p-4 bg-gray-900 text-white h-screen">
-      <h1 className="text-2xl font-bold">WebRTC Video Chat</h1>
+      <h1 className="text-2xl font-bold">Candidate behavior</h1>
       <div className="relative w-full flex justify-center">
         <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-auto bg-black rounded-lg" />
         <video ref={localVideoRef} autoPlay playsInline className="absolute bottom-4 right-4 w-64 h-64 bg-black rounded-lg border-2 border-white shadow-lg" />

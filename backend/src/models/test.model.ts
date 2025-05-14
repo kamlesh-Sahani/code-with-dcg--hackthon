@@ -15,8 +15,11 @@ export interface IQuestionSet extends Document {
   difficulty: string;
   questions: IQuestion[];
   isDeleted?: boolean;
+  interviewId:string;
   createdAt?: Date;
   updatedAt?: Date;
+  score:number;
+  isCompleted:boolean;
 }
 
 const QuestionSetSchema = new Schema<IQuestionSet>(
@@ -34,9 +37,18 @@ const QuestionSetSchema = new Schema<IQuestionSet>(
         },
         questionText: { type: String, required: true },
         options: { type: [String], default: undefined },
-        correctAnswer: { type: Schema.Types.Mixed, default: undefined },
+        correctAnswer: { type: Schema.Types.Mixed, default: undefined ,select:false},
       },
+    
     ],
+    score:Number,
+    interviewId:{
+      type:String,
+    },
+    isCompleted:{
+      type:Boolean,
+      default:false
+    },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -9,16 +9,24 @@ const cookieOption = {
 export const newCompany = asyncHandler(async (req, res, next) => {
     try {
         await dbConnect();
+        console.log(req.body, "body");
         const { companyName, adminEmail, adminName, address, password } = req.body;
         if (!companyName || !adminEmail || !adminName || !password) {
             return next(new ErrorHandler("All required fields must be filled", 400));
         }
         // Check if the company already exists
-        const existingCompany = await companyModel.findOne({ amdminEmail: adminEmail }); // Schema typo fix
+        const existingCompany = await companyModel.findOne({ adminEmail: adminEmail }); // Schema typo fix
         if (existingCompany) {
             return next(new ErrorHandler("Company with this email already exists", 400));
         }
         // Create a new company
+        console.log({
+            companyName,
+            adminEmail: adminEmail,
+            adminName,
+            address,
+            password,
+        }, "test");
         const company = await companyModel.create({
             companyName,
             adminEmail: adminEmail,
@@ -26,6 +34,7 @@ export const newCompany = asyncHandler(async (req, res, next) => {
             address,
             password,
         });
+        console.log(company, "company");
         if (!company) {
             return next(new ErrorHandler("failed to register please try again", 400));
         }

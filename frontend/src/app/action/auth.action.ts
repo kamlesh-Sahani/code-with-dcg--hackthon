@@ -1,10 +1,11 @@
 "use server";
 import userModel from "@/models/user.model";
-import { registerDataType } from "../register/page";
 import { cookies } from "next/headers";
 import dbConnect from "@/lib/dbConnect";
-import { LoginDataType } from "../login/page";
-
+import { registerDataType } from "../candidate/register/page";
+import { LoginDataType } from "../candidate/login/page";
+import { RegisterDataType as companyRegisterType } from "../company/register/page";
+import companyModel from "@/models/company.model";
 const setCookie = async (token: string) => {
   const cookieStore = await cookies();
   cookieStore.set("auth-token", token, {
@@ -98,3 +99,103 @@ export const loginAction = async(loginData:LoginDataType)=>{
     };
   }
 }
+
+export const companyRegister = async (registerData: companyRegisterType) => {
+  try {
+    await dbConnect();
+    const { companyName, adminEmail, adminName, address, password } = registerData;
+    
+    if (!companyName || !adminEmail || !adminName || !password) {
+      return {
+        success: false,
+        message: "Please fill all required fields",
+      };
+    }
+
+    const isExist = await companyModel.findOne({ adminEmail });
+    if (isExist) {
+      return {
+        success: false,
+        message: "Company with this email already exists",
+      };
+    }
+
+    const company = await companyModel.create({
+      companyName,
+      adminEmail,
+      adminName,
+      address,
+      password,
+    });
+
+    if (!company) {
+      return {
+        success: false,
+        message: "Failed to create company account",
+      };
+    }
+
+    // You might want to send an activation email here
+    // For now, we'll just return success
+    const token = company.generateToken();
+    await setCookie(token);
+    return {
+      success: true,
+      message: "Company registered successfully. Please wait for activation.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Something went wrong during registration",
+    };
+  }
+};
+
+export const companyLogin = async (loginData: LoginDataType) => {
+  try {
+    await dbConnect();
+    const { email, password } = loginData;
+    
+    if (!email || !password) {
+      return {
+        success: false,
+        message: "Please provide email and password",
+      };
+    }
+
+    const company = await companyModel.findOne({ adminEmail: email }).select("+password");
+    
+    if (!company) {
+      return {
+        success: false,
+        message: "Company not found",
+      };
+    }
+
+    const isMatch = await company.comparePassword(password);
+    if (!isMatch) {
+      return {
+        success: false,
+        message: "Invalid email or password",
+      };
+    }
+
+    const token = company.generateToken();
+    await setCookie(token);
+    
+    return {
+      success: true,
+      message: "Login successful",
+      company: {
+        id: company._id,
+        name: company.companyName,
+        email: company.adminEmail
+      }
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Something went wrong during login",
+    };
+  }
+};

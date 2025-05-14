@@ -1,9 +1,11 @@
 import express from "express";
-import { createQuestionSet, addQuestionToSet, getAllQuestionSets, deleteQuestionSet, deleteQuestionFromSet } from "../controllers/test.controller.js";
+import { createQuestionSet, addQuestionToSet, getAllQuestionSets, deleteQuestionSet, deleteQuestionFromSet, getTest, submitAnser } from "../controllers/test.controller.js";
 const router = express.Router();
 router.post("/create", createQuestionSet);
 router.post("/new/:id", addQuestionToSet);
 router.get("/get", getAllQuestionSets);
+router.post("/get", getTest);
+router.post("/submit-asnwer", submitAnser);
 router.delete("/delete/:id", deleteQuestionSet);
 router.delete("/:testId/delete-question/:questionId", deleteQuestionFromSet);
 export default router;

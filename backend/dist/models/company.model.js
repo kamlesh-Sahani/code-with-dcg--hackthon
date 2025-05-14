@@ -5,11 +5,7 @@ const CompanySchema = new Schema({
     companyName: { type: String, required: true },
     adminEmail: { type: String, required: true, unique: true },
     adminName: { type: String, required: true },
-    address: {
-        city: { type: String },
-        state: { type: String },
-        country: { type: String },
-    },
+    address: String,
     password: {
         type: String,
         required: [true, "please enter the password"],

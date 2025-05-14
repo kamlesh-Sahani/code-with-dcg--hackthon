@@ -8,8 +8,6 @@ import {
   useContext,
 } from "react";
 import { SocketContext } from "./socketContext";
-import { Socket } from "node:dgram";
-
 interface EditorContextType {
   language: string;
   defaultCode: string;

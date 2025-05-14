@@ -41,6 +41,7 @@ export default function LoginPage() {
 
       if (data.success) {
         toast.success(data.message);
+        localStorage.setItem("role","company")
         setLoginData({
           email: "",
           password: "",
@@ -51,6 +52,7 @@ export default function LoginPage() {
         toast.error(data.message);
       }
     } catch (error) {
+      localStorage.removeItem("role")
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -134,7 +136,7 @@ export default function LoginPage() {
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
       </form>
       <Link
-        href={"/register"}
+        href={"/company/register"}
         className="text-white text-center w-full  block italic"
       >
         Register new account

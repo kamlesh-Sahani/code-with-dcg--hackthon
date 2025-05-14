@@ -15,12 +15,18 @@ function InterviewPage() {
     "canvas" | "editor"  | "performance" | "test"|"interview"
   >("canvas");
   const pathname = usePathname();
+  const [role,setRole] = useState<string>("");
 
   const [isModalOpen, setIsModalOpen] = useState(true);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   console.log(pathname,"pathname")
+
+  useEffect(()=>{
+    const role = localStorage.getItem("role");
+    setRole(role);
+  },[])
   return (
     <div className="flex flex-col w-full justify-center items-center px-6 pt-20 gap-2  text-white h-screen">
       <div className="flex justify-center  items-center">
@@ -35,9 +41,12 @@ function InterviewPage() {
         <button className={`w-[140px] h-[40px] text-sm max-sm:w-[120px]    cursor-pointer hover:bg-[#1f1f1f94]  border-t-2 border-b-2 border-l-[#272727]  border-t-[#272727] border-b-[#272727] font-semibold  ${screenType==="canvas"?"bg-[#1f1f1f94]":""}`} onClick={()=>setScreenType("canvas")}>
           Canvas
         </button>
-        <button className={`w-[140px] h-[40px] text-sm max-sm:w-[120px] rounded-r-md cursor-pointer hover:bg-[#1f1f1f94] border-2 border-[#272727] font-semibold  ${screenType==="performance"?"bg-[#1f1f1f94]":""}`} onClick={()=>setScreenType("performance")}>
+        {
+          role==="company" &&  <> <button className={`w-[140px] h-[40px] text-sm max-sm:w-[120px] rounded-r-md cursor-pointer hover:bg-[#1f1f1f94] border-2 border-[#272727] font-semibold  ${screenType==="performance"?"bg-[#1f1f1f94]":""}`} onClick={()=>setScreenType("performance")}>
           Performance
-        </button>
+        </button></>  
+        }
+    
         <button className={`w-[140px] h-[40px] text-sm max-sm:w-[120px] rounded-r-md cursor-pointer hover:bg-[#1f1f1f94] border-2 border-[#272727] font-semibold  ${screenType==="performance"?"bg-[#1f1f1f94]":""}`} onClick={()=>setScreenType("interview")}>
           Live Interview
         </button>
