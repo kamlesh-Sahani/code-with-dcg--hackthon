@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import companyModel from "../models/company.model.js";
+import dbConnect from "../utils/dbConnect.js";
 
 
 export interface AuthenticatedRequest extends Request {
@@ -10,6 +11,7 @@ export interface AuthenticatedRequest extends Request {
   }
 export  const authMiddleware = async(req:AuthenticatedRequest,res:Response,next:NextFunction)=>{
     try {
+        await dbConnect()
         /**
          * eg. headers:{
          * authorization:bearer kjhhskfsdfdf(token)

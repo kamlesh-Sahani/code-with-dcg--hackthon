@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js";
 import companyModel from "../models/company.model.js";
+import dbConnect from "../utils/dbConnect.js";
 export const authMiddleware = async (req, res, next) => {
     try {
+        await dbConnect();
         /**
          * eg. headers:{
          * authorization:bearer kjhhskfsdfdf(token)
