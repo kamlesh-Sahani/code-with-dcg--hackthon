@@ -33,11 +33,14 @@ const Navbar = () => {
       }
       console.log(data);
       console.log(data, "me");
-      if (data.success) {
-        setUser(data.user);
+      if (data.success && role==="user") {
+        setUser(data?.user);
+      }
+      if(data.success && role==="company"){
+        console.log(data.company,"company")
+        setUser(data?.company)
       }
     } catch (error: any) {
-      setUser(null);
       console.log(error?.response?.data);
     }
   };
@@ -47,6 +50,7 @@ const Navbar = () => {
       fetchMe();
     }
   }, [user]);
+  console.log(user,"user")
   return (
     <div
       className={`flex justify-between items-center  max-sm:w-[90%] px-5 h-[60px] sm:w-[75%] mx-auto rounded-2xl fixed top-4 z-50 left-1/2 -translate-x-1/2 transition-all duration-300 ${
@@ -66,7 +70,7 @@ const Navbar = () => {
         </div>
       </Link>
       <div className="flex justify-center items-center gap-5">
-        {user && user?.email ? (
+        {user ? (
           <Link href={"/profile"}>
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />

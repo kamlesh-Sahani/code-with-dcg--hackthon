@@ -26,7 +26,7 @@ import {
   MoreHorizontal,
   Mail,
 } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { AuthContext } from "@/context/authContext";
@@ -51,8 +51,13 @@ export default function Profile() {
     // Call your backend API here to send emails (e.g., using Nodemailer)
   };
 
-  const { user, logoutHandler } = useContext(AuthContext);
+  const { user:contextUser, logoutHandler } = useContext(AuthContext);
+  const [user,setUser] = useState<any>();
   console.log(user, "user");
+
+  useEffect(()=>{
+    setUser(contextUser)
+  },[contextUser])
   const [userData] = useState({
     name: "Kamlesh Sahani",
     email: "kamleshbca2005@gmail.com",
@@ -181,19 +186,20 @@ export default function Profile() {
   ];
   return (
     <div className="min-h-screen p-5 mt-20 bg-gray-900">
-      <div className="max-w-6xl mx-auto shadow-2xl rounded-xl overflow-hidden bg-gray-800">
+      {
+        user &&    <div className="max-w-6xl mx-auto shadow-2xl rounded-xl overflow-hidden bg-gray-800">
         {/* Header Section */}
         <div className="p-6 flex items-center justify-between gap-5 border-b border-gray-700 max-sm:flex-col">
           <div className="w-full flex gap-4 items-center">
             <Avatar className="rounded-full border-4 border-indigo-500 shadow-lg w-24 h-24">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback className="bg-gray-700 text-white">
-                {user?.name[0]}
+             
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
-              <p className="text-gray-300">{user?.email}</p>
+              <h1 className="text-2xl font-bold text-white">{user?.name || user?.adminName}</h1>
+              <p className="text-gray-300">{user?.email || user?.adminEmail}</p>
               <div className="flex gap-4 mt-2">
                 <span className="bg-gray-700 px-3 py-1 rounded-full text-sm text-gray-300">
                   Role: {userData.role}
@@ -451,6 +457,8 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      }
+   
 
       {/* Modals */}
       <InterviewInviteDialog
